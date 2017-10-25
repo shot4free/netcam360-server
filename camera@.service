@@ -1,0 +1,16 @@
+[Unit]
+Description=Camera Service on %I
+After=network.target
+
+[Service]
+Type=simple
+KillSignal=HUP
+User=camera
+SyslogIdentifier=camera_%i
+ExecStart=/bin/bash -a -c '</dev/tcp/%i/10554 && source /etc/camera.conf && mkdir -p /home/camera/%i && cd /home/camera/%i && exec /usr/bin/openRTSP -D 5 -F $DATE -K -4 -P 3600 -l -b 200000 rtsp://%i:10554/udp/av0_0'
+Restart=always
+RestartSec=10
+#Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
